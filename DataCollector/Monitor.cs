@@ -9,32 +9,46 @@ namespace DataCollector
 {
     public class Monitor
     {
-        Computer computer;
+        readonly Dictionary<string, float> _values;
+        readonly Computer _computer;
 
-        public Monitor()
+        readonly string _cpuSensorName;
+        readonly string _gpuSensorName;
+
+        public float CPU => GetValue(_cpuSensorName);
+        public float GPU => GetValue(_gpuSensorName);
+
+        public Monitor(string cpuSensorName, string gpuSensorName)
         {
-            computer = new Computer() { CPUEnabled = true, GPUEnabled = true };
-            computer.Open();
+            _cpuSensorName = cpuSensorName;
+            _gpuSensorName = gpuSensorName;
+            _values = new Dictionary<string, float>();
+            _computer = new Computer() { CPUEnabled = true, GPUEnabled = true };
+            _computer.Open();
         }
 
-        public void Refresh()
+        public void Update()
         {
-            foreach (IHardware hardware in computer.Hardware)
+            foreach (IHardware hardware in _computer.Hardware)
             {
                 hardware.Update();
 
-                Console.WriteLine("{0}: {1}", hardware.HardwareType, hardware.Name);
                 foreach (ISensor sensor in hardware.Sensors)
-                {
-                    // Celsius is default unit
                     if (sensor.SensorType == SensorType.Temperature)
-                    {
-                        Console.WriteLine("{0}: {1}°C", sensor.Name, sensor.Value);
-                        // Console.WriteLine("{0}: {1}°F", sensor.Name, sensor.Value*1.8+32);
-                    }
-
-                }
+                        _values[sensor.Name] = sensor.Value ?? 0f;
             }
+        }
+
+        public IEnumerable<KeyValuePair<string, float>> GetValues()
+        {
+            return _values;
+        }
+
+        public float GetValue(string sensorName)
+        {
+            if (_values.TryGetValue(sensorName, out var value))
+                return value;
+            else return 0f;
         }
     }
 }
