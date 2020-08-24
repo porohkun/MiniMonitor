@@ -1,3 +1,6 @@
 [submodule "modbusino"]
 	path = modbusino
 	url = git@github.com:porohkun/modbusino.git
+[submodule "openhardwaremonitor"]
+	path = openhardwaremonitor
+	url = git@github.com:openhardwaremonitor/openhardwaremonitor.git
