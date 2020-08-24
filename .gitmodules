@@ -1,0 +1,3 @@
+[submodule "modbusino"]
+	path = modbusino
+	url = git@github.com:porohkun/modbusino.git
