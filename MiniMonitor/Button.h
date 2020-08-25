@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-#define BTN_COUNT 5
+#define BTN_COUNT 1
 
 class ButtonClass
 {
@@ -19,7 +19,7 @@ private:
 	bool _prevStates[BTN_COUNT];
 	bool _nextStates[BTN_COUNT];
 	bool _isStateChanging[BTN_COUNT];
-	int _precision[BTN_COUNT] = { 40, 40, 40, 40, 40 };
+	int _precision[BTN_COUNT] = { 40 };
 	unsigned long _beginStateTime[BTN_COUNT];
 };
 

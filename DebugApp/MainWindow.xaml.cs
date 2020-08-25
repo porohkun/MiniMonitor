@@ -22,7 +22,7 @@ namespace DebugApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        Monitor _monitor = new Monitor();
+        Monitor _monitor = new Monitor(1, "CPU Package", "GPU Core");
 
         public ObservableCollection<ValueData> Values { get; set; } = new ObservableCollection<ValueData>();
 
@@ -31,7 +31,7 @@ namespace DebugApp
             InitializeComponent();
             DataContext = this;
 
-            _monitor.Update();
+            //_monitor.Update();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
