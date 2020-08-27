@@ -25,6 +25,11 @@ namespace DebugApp
         Monitor _monitor = new Monitor(1, "CPU Package", "GPU Core");
 
         public ObservableCollection<ValueData> Values { get; set; } = new ObservableCollection<ValueData>();
+        public bool TimerEnabled
+        {
+            get => _monitor.TimerEnabled;
+            set => _monitor.TimerEnabled = value;
+        }
 
         public MainWindow()
         {

@@ -13,6 +13,7 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
             <Button Content="Refresh" Click="Button_Click"/>
+            <CheckBox Content="AutoRefresh" IsChecked="{Binding TimerEnabled}"/>
         </StackPanel>
         <ItemsControl Grid.Column="1" ItemsSource="{Binding Values}">
             <ItemsControl.ItemTemplate>

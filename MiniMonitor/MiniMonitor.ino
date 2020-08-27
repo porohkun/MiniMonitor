@@ -5,11 +5,11 @@
 */
 
 
-#include <U8g2lib.h>
 
-#include "Modbusino.h"
 #include "Button.h"
 #include "Timer.h"
+#include "Modbusino.h"
+#include <U8g2lib.h>
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 ModbusinoSlave Modbus(1);
@@ -29,7 +29,7 @@ ModbusinoSlave Modbus(1);
 
 #define ZERO 0x00
 #define CPU_MIN_TEMP 40
-#define CPU_MAX_TEMP 50
+#define CPU_MAX_TEMP 60
 
 #define CPU_LABEL "CPU"
 #define GPU_LABEL "GPU"
@@ -66,7 +66,7 @@ void setup()
 	byte buttons[] = { 0x03 };
 	Button.SetButtons(buttons);
 
-	Timer.SetInterval(500);
+	Timer.SetInterval(1000);
 	Timer.Start();
 
 	u8g2.begin();
@@ -121,11 +121,6 @@ void loop()
 	}
 
 	u8g2.sendBuffer();
-}
-
-void drawClock()
-{
-
 }
 
 void drawSideTemp(const char* label, uint16_t value, uint8_t y)
