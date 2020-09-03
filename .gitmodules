@@ -4,3 +4,6 @@
 [submodule "openhardwaremonitor"]
 	path = openhardwaremonitor
 	url = git@github.com:openhardwaremonitor/openhardwaremonitor.git
+[submodule "modbus-arduino"]
+	path = modbus-arduino
+	url = git@github.com:andresarmento/modbus-arduino.git
