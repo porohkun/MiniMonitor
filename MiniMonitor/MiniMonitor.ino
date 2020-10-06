@@ -5,10 +5,12 @@
 */
 
 
-
-#include "Button.h"
-#include "Timer.h"
-#include "Modbusino.h"
+#include "Arduino.h"
+#include "USBAPI.h"
+#include "src\Button.h"
+#include "src\Timer.h"
+#include "modbusino\Modbusino.h"
+#include "modbusino\Modbusino.cpp"
 #include <U8g2lib.h>
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);

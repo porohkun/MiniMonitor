@@ -1,9 +1,9 @@
-[submodule "modbusino"]
-	path = modbusino
-	url = git@github.com:porohkun/modbusino.git
 [submodule "openhardwaremonitor"]
 	path = openhardwaremonitor
 	url = git@github.com:openhardwaremonitor/openhardwaremonitor.git
-[submodule "modbus-arduino"]
-	path = modbus-arduino
+[submodule "MiniMonitor/modbusino"]
+	path = MiniMonitor/modbusino
+	url = git@github.com:porohkun/modbusino.git
+[submodule "MiniMonitor/modbus-arduino"]
+	path = MiniMonitor/modbus-arduino
 	url = git@github.com:andresarmento/modbus-arduino.git

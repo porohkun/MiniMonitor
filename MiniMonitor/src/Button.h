@@ -19,7 +19,7 @@ private:
 	bool _prevStates[BTN_COUNT];
 	bool _nextStates[BTN_COUNT];
 	bool _isStateChanging[BTN_COUNT];
-	int _precision[BTN_COUNT] = { 40 };
+	int _precision[BTN_COUNT] = {40};
 	unsigned long _beginStateTime[BTN_COUNT];
 };
 

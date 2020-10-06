@@ -1,0 +1,6 @@
+{
+    "sketch": "MiniMonitor.ino",
+    "port": "COM3",
+    "programmer": "AVRISP mkII",
+    "board": "arduino:avr:micro"
+}
