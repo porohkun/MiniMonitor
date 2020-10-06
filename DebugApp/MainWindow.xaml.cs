@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,22 @@ namespace DebugApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            using (SerialPort port = new SerialPort("COM5")
+            {
+                BaudRate = 115200,
+                DataBits = 8,
+                Parity = Parity.None,
+                StopBits = StopBits.One,
+                ReadTimeout = 3000,
+                WriteTimeout = 3000
+            })
+            {
+                port.Open();
+                port.Write(new byte[] { 5 }, 0, 1);
+                while (port.BytesToRead == 0) ;
+                MessageBox.Show(port.ReadByte().ToString());
+            }
+            return;
             _monitor.Update();
             Values.Clear();
             foreach (var value in _monitor.GetValues())

@@ -14,6 +14,8 @@
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 ModbusinoSlave Modbus(1);
 
+#define MODE_BUTTON 0x04
+
 #define ID_0 0x4D //this defines
 #define ID_1 0x4D //gadget name for
 #define ID_2 0x72 //identify COM port on PC
@@ -61,9 +63,8 @@ void setup()
 	_registers[1] = ID_1;
 	_registers[2] = ID_2;
 
-	pinMode(LED_BUILTIN, OUTPUT);
 
-	byte buttons[] = { 0x03 };
+	byte buttons[] = { MODE_BUTTON };
 	Button.SetButtons(buttons);
 
 	Timer.SetInterval(1000);
@@ -72,13 +73,18 @@ void setup()
 	u8g2.begin();
 
 	Modbus.setup(115200);
+
 }
 
 void loop()
 {
-	Button.Loop();
-	digitalWrite(LED_BUILTIN, Button.GetState(0x03) ? HIGH : LOW);
 
+
+	Button.Loop();
+	if (Button.GetDown(MODE_BUTTON))
+		_cpuMode = !_cpuMode;
+
+	//if(Serial)
 	Modbus.loop(_registers, 11);
 	Timer.Loop();
 
@@ -87,6 +93,7 @@ void loop()
 		int16_t t = max(0, _registers[REG_CPU_TEMP] - CPU_MIN_TEMP) * 16;
 		_cpuLine[_cpuIndex] = min(16, max(1, t / (CPU_MAX_TEMP - CPU_MIN_TEMP)));
 		_cpuIndex = (_cpuIndex + 1) % _cpuLineSize;
+		_registers[REG_CPU_TEMP] = (_registers[REG_CPU_TEMP] + 1) % 99;
 	}
 
 	_registers[0] = ID_0;
@@ -94,25 +101,27 @@ void loop()
 	_registers[2] = ID_2;
 
 
-	if (Button.GetDown(0x03))
-		_cpuMode = !_cpuMode;
 
 	u8g2.clearBuffer();
 
 	u8g2.setColorIndex(1);
 
-	char clocktext[6] = "00:00";
-	setNumberToCharBuffer(_registers[REG_HOUR], 0, clocktext);
-	setNumberToCharBuffer(_registers[REG_MINUTE], 3, clocktext);
+	//char clocktext[6] = "00:00";
+	//setNumberToCharBuffer(_registers[REG_HOUR], 0, clocktext);
+	//setNumberToCharBuffer(_registers[REG_MINUTE], 3, clocktext);
 
-	u8g2.setFont(u8g2_font_logisoso34_tn);
-	u8g2.drawStr(0, 64 - (64 - 16 - 34) / 2, clocktext);
+	//u8g2.setFont(u8g2_font_logisoso34_tn);
+	//u8g2.drawStr(0, 64 - (64 - 16 - 34) / 2, clocktext);
 
 	drawSideTemp(CPU_LABEL, _registers[REG_CPU_TEMP], 25);
 	drawSideTemp(GPU_LABEL, _registers[REG_GPU_TEMP], 49);
 
 	u8g2.setFont(u8g2_font_rosencrantz_nbp_tr);
 	u8g2.drawStr(0, 15, _cpuMode ? CPU_LABEL : GPU_LABEL);
+	if (Serial)
+		u8g2.drawStr(0, 25, "ser");
+	if (Serial.available())
+		u8g2.drawStr(0, 35, "ser aval");
 
 	for (uint8_t i = 0; i < _cpuLineSize; i++)
 	{
