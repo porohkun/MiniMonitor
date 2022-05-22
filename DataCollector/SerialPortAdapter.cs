@@ -1,7 +1,7 @@
-﻿using System;
+﻿using NModbus.IO;
+using System;
 using System.Diagnostics;
 using System.IO.Ports;
-using NModbus.IO;
 
 namespace NModbus.Serial
 {

@@ -4,8 +4,6 @@ using OpenHardwareMonitor.Hardware;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -87,6 +85,8 @@ namespace DataCollector
                 WriteTimeout = 3000
             };
             port.Open();
+            port.RtsEnable = true;
+            port.DtrEnable = true;
             return port;
         }
 

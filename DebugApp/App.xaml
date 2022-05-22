@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:DebugApp"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <local:MainWindowViewModelDummy x:Key="MainWindowViewModelDummy"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

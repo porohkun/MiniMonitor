@@ -5,29 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DebugApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="300">
+        d:DataContext="{StaticResource MainWindowViewModelDummy}"
+        Title="MainWindow" Height="300" Width="300"
+        WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
-            <Button Content="Refresh" Click="Button_Click"/>
-            <CheckBox Content="AutoRefresh" IsChecked="{Binding TimerEnabled}"/>
+            <ComboBox Margin="2" ItemsSource="{Binding Ports}" SelectedItem="{Binding SelectedPort}"/>
+            <Button Margin="2" Content="Listen Port" Command="{Binding ListenPortCommand}"/>
+            <Button Margin="2" Content="Start Monitor" Command="{Binding StartMonitorCommand}"/>
+            <CheckBox Margin="2" Content="AutoRefresh" IsChecked="{Binding TimerEnabled}"/>
         </StackPanel>
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Values}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,0,0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="40"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="0,0,12,0" HorizontalAlignment="Right"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Value}"/>
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <TabControl Margin="2,2,0,0" Grid.Column="1">
+            <TabItem Header="Values">
+                <ItemsControl ItemsSource="{Binding Values}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="40"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="0,0,12,0" HorizontalAlignment="Right"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Value}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </TabItem>
+            <TabItem Header="Log">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" local:Helper.AutoScroll="True">                    
+                <TextBlock Text="{Binding Logs}" Background="DarkSlateGray" Foreground="LightGray" FontFamily="Courier New"/>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
