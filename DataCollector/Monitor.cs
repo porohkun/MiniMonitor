@@ -1,4 +1,4 @@
-﻿using OpenHardwareMonitor.Hardware;
+﻿using LibreHardwareMonitor.Hardware;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
@@ -31,9 +31,8 @@ namespace DataCollector
             _values = new Dictionary<string, float>();
 
             UpdateVisitor updateVisitor = new UpdateVisitor();
-            _computer = new Computer() { CPUEnabled = true, GPUEnabled = true };
+            _computer = new Computer() { IsCpuEnabled = true, IsGpuEnabled = true };
             _computer.Open();
-            _computer.CPUEnabled = true;
             _computer.Accept(updateVisitor);
             _timer = new Timer(TimerTick, new object(), 0, 500);
         }
@@ -52,7 +51,7 @@ namespace DataCollector
 
                 foreach (ISensor sensor in hardware.Sensors)
                     if (sensor.SensorType == SensorType.Temperature)
-                        _values[$"{hardware.Name} - {sensor.Name}"] = sensor.Value ?? 0f;
+                        _values[sensor.Name] = sensor?.Value ?? 0f;
             }
 
             if (_activeDevice != null)

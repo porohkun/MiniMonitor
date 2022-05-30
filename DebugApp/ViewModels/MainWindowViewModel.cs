@@ -27,7 +27,7 @@ namespace DebugApp
 
     public class MainWindowViewModel : BindableBase
     {
-        Monitor _monitor = new Monitor(1, "CPU Package", "GPU Core");
+        Monitor _monitor = new Monitor(1, "Core Average", "GPU Core");
 
         public ObservableCollection<ValueData> Values { get; } = new ObservableCollection<ValueData>();
         private string _logs = "";
