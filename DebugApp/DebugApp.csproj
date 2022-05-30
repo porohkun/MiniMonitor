@@ -56,8 +56,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helper.cs" />
+    <Compile Include="Cell.cs" />
+    <Compile Include="Converters\BoolToColorConverter.cs" />
+    <Compile Include="Misc\Helper.cs" />
+    <Compile Include="Misc\StringExtensions.cs" />
     <Compile Include="ValueData.cs" />
+    <Compile Include="XBmpWindow.xaml.cs">
+      <DependentUpon>XBmpWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\XBmpWindowViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -66,15 +73,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BindableBase.cs" />
-    <Compile Include="DelegateCommand.cs" />
+    <Compile Include="Misc\BindableBase.cs" />
+    <Compile Include="Misc\DelegateCommand.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="XBmpWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -106,5 +117,6 @@
       <Name>DataCollector</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\WPF.Controls.IntUpDown\WPF.Controls.IntUpDown\WPF.Controls.IntUpDown.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

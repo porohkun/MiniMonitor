@@ -24,7 +24,7 @@ namespace DebugApp
         }
     }
 
-    public partial class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : BindableBase
     {
         Monitor _monitor = new Monitor(1, "CPU Package", "GPU Core");
 
@@ -51,6 +51,7 @@ namespace DebugApp
 
         public DelegateCommand ListenPortCommand { get; }
         public DelegateCommand StartMonitorCommand { get; }
+        public DelegateCommand XBmpEditorOpenCommand { get; }
 
         private object _valuesLock = new object();
         private object _portsLock = new object();
@@ -59,6 +60,7 @@ namespace DebugApp
         {
             ListenPortCommand = new DelegateCommand(() => Task.Run(ListenPort));
             StartMonitorCommand = new DelegateCommand(() => Task.Run(StartMonitor));
+            XBmpEditorOpenCommand = new DelegateCommand(() => new XBmpWindow().Show());
 
             System.Windows.Data.BindingOperations.EnableCollectionSynchronization(Values, _valuesLock);
             System.Windows.Data.BindingOperations.EnableCollectionSynchronization(Ports, _portsLock);

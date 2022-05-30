@@ -21,6 +21,8 @@
             <Button Margin="2" Content="Listen Port" Command="{Binding ListenPortCommand}"/>
             <Button Margin="2" Content="Start Monitor" Command="{Binding StartMonitorCommand}"/>
             <CheckBox Margin="2" Content="AutoRefresh" IsChecked="{Binding TimerEnabled}"/>
+            <Separator Height="50"/>
+            <Button Margin="2" Content="XBMP Editor" Command="{Binding XBmpEditorOpenCommand}"/>
         </StackPanel>
         <TabControl Margin="2,2,0,0" Grid.Column="1">
             <TabItem Header="Values">

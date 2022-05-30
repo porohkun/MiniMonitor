@@ -5,7 +5,12 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="IntUpDown.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
             <local:MainWindowViewModelDummy x:Key="MainWindowViewModelDummy"/>
+            <local:XBmpWindowViewModelDummy x:Key="XBmpWindowViewModelDummy"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
