@@ -7,3 +7,6 @@
 [submodule "MiniMonitor/modbus-arduino"]
 	path = MiniMonitor/modbus-arduino
 	url = git@github.com:andresarmento/modbus-arduino.git
+[submodule "WPF.Controls.IntUpDown"]
+	path = WPF.Controls.IntUpDown
+	url = ../WPF.Controls.IntUpDown.git

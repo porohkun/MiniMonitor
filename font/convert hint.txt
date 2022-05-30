@@ -1,0 +1,1 @@
+.\bdfconv.exe -f 1 -m '32,48-58,67,71,80,85' -b 0 -n tall -o "MiniMonitor\font\tall.c" "MiniMonitor\font\tall.bdf"

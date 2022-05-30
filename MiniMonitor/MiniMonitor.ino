@@ -11,6 +11,8 @@
 #include "modbusino\Modbusino.h"
 #include "modbusino\Modbusino.cpp"
 #include <U8g2lib.h>
+//#include "src\Digits.h"
+//#include "tall.h"
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
 ModbusinoSlave Modbus(1);
@@ -31,9 +33,9 @@ ModbusinoSlave Modbus(1);
 #define REG_GPU_TEMP 0x0A
 
 #define ZERO 0x00
-#define CPU_MIN_TEMP 40
+#define CPU_MIN_TEMP 20
 #define CPU_MAX_TEMP 60
-#define GPU_MIN_TEMP 40
+#define GPU_MIN_TEMP 20
 #define GPU_MAX_TEMP 60
 
 #define CPU_LABEL "CPU"
@@ -55,10 +57,23 @@ uint16_t _registers[11]{
 uint8_t _regSize = sizeof(_registers) / sizeof(_registers[0]);
 
 bool _cpuMode = true;
-uint8_t _cpuLine[22]{ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO};
-uint8_t _gpuLine[22]{ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO};
+uint8_t _cpuLine[27]{ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO};
+uint8_t _gpuLine[27]{ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO};
 uint8_t _lineSize = sizeof(_cpuLine) / sizeof(_cpuLine[0]);
 uint8_t _lineIndex = 0;
+
+const uint8_t tall[209] U8G2_FONT_SECTION("tall") =
+	"\20\0\3\2\3\4\2\4\4\5\14\0\371\5\0\5\371\0\0\0\0\0\271 \5\0\321\1\60\12e\303"
+	"\263d\376[\262\0\61\13e\303\225II\330\237\6\1\62\13e\303\263dao\35\7\1\63\15e\303"
+	"\61h\265\65\354\250%\13\0\64\20e\303\27f\246$JJI\224\14ZX\1\65\15e\303q\14\207"
+	"\64\354\250%\13\0\66\15e\303\263d\342\220d~K\26\0\67\15e\303\61\210\265\260\26\326\302\32\0"
+	"\70\15e\303\263dZ\262d~K\26\0\71\15e\303\263d~K\206PK\26\0:\10\262\311\61\204"
+	"C\0C\13e\303\263db\177K\26\0G\14e\303\263db\237\66-Y\0P\14e\303\61$\231"
+	"\337\6%,\2U\11e\303\221\371\337\222\5\0\0\0\4\377\377\0";
+const uint8_t tall_s[147] U8G2_FONT_SECTION("tall") =
+	"\4\0\3\2\3\3\1\2\4\5\7\0\376\5\376\5\376\0\0\0\0\0)C\12}<K&\266%\13"
+	"\0G\12}<K&\226\266d\1P\13}\34C\222\331\6%\14\1U\10}\34\231o\311\2\0\0"
+	"\0\4\377\377\0";
 
 void setup()
 {
@@ -107,92 +122,45 @@ void loop()
 	u8g2.clearBuffer();
 
 	u8g2.setColorIndex(1);
+	u8g2.setFont(tall);
 
-	drawSideTemp(CPU_LABEL, _registers[REG_CPU_TEMP], 25);
-	drawSideTemp(GPU_LABEL, _registers[REG_GPU_TEMP], 49);
+	u8g2.drawStr(1, 7, _cpuMode ? CPU_LABEL : GPU_LABEL);
+	u8g2.setFont(tall_s);
+	u8g2.drawStr(108, 22, CPU_LABEL);
+	u8g2.drawStr(108, 47, GPU_LABEL);
 
-	u8g2.setFont(u8g2_font_rosencrantz_nbp_tr);
-	u8g2.drawStr(0, 15, _cpuMode ? CPU_LABEL : GPU_LABEL);
-	if (Serial)
-		u8g2.drawStr(0, 25, "ser");
-	if (Serial.available())
-		u8g2.drawStr(0, 35, "ser aval");
+	u8g2.setFont(tall);
+	char temp[6] = "00000";
+	numberToCharBuffer(_registers[REG_CPU_TEMP], temp, 3, 5, '0');
+	u8g2.drawStr(106, 32, temp);
+	u8g2.drawFrame(124, 27, 4, 4);
+	numberToCharBuffer(_registers[REG_GPU_TEMP], temp, 3, 5, ' ');
+	u8g2.drawStr(106, 57, temp);
+	u8g2.drawFrame(124, 52, 4, 4);
 
-	u8g2.drawStr(75, 26, "E");
+	numberToCharBuffer(_registers[REG_MINUTE], temp, 5, 5, '0');
+	numberToCharBuffer(_registers[REG_HOUR], temp, 2, 2, '0');
+	temp[2]=':';
 
-	char temp[3] = "00";
-	setNumberToCharBuffer((millis() / 1000) % 100, 0, temp);
-	u8g2.drawStr(0, 45, temp);
-
-	setNumberToCharBuffer(_lineIndex, 0, temp);
-	u8g2.drawStr(30, 45, temp);
-
-	setNumberToCharBuffer(_gpuLine[_lineIndex], 0, temp);
-	u8g2.drawStr(60, 45, temp);
-
-	setNumberToCharBuffer(_registers[REG_HOUR], 0, temp);
-	u8g2.drawStr(0, 64, temp);
-
-	setNumberToCharBuffer(_registers[REG_MINUTE], 0, temp);
-	u8g2.drawStr(30, 64, temp);
+	u8g2.drawStr(0, 52, temp);
 
 	for (uint8_t i = 0; i < _lineSize; i++)
 	{
-		uint8_t height = min(1, (_cpuMode ? _cpuLine : _gpuLine)[(_lineIndex + i) % _lineSize]);
-		u8g2.drawBox(128 - (_lineSize - i) * 5 + 1, 16 - height, 4, height);
+		uint8_t height = max(1, (_cpuMode ? _cpuLine : _gpuLine)[(_lineIndex + i) % _lineSize]);
+		u8g2.drawBox(128 - (_lineSize - i) * 4 + 1, 16 - height, 3, height);
 	}
 
 	u8g2.sendBuffer();
 }
 
-void drawSideTemp(const char *label, uint16_t value, uint8_t y)
+void numberToCharBuffer(uint8_t number, char *buffer, uint8_t length, uint8_t bufferLength, char zeroChar)
 {
-	char temp[3] = "00";
-
-	u8g2.setFont(u8g2_font_bitcasual_tu);
-	u8g2.drawStr(100, y, label);
-
-	setNumberToCharBuffer(value, 0, temp);
-	u8g2.setFont(u8g2_font_timR12_tn);
-
-	u8g2.drawStr(100, y + 14, temp);
-	u8g2.drawCircle(125, y + 4, 2);
-}
-
-void reverse(char s[])
-{
-	int i, j;
-	char c;
-
-	for (i = 0, j = strlen(s) - 1; i < j; i++, j--)
+	for (int8_t i = length - 1; i >= 0; i--)
 	{
-		c = s[i];
-		s[i] = s[j];
-		s[j] = c;
+		uint8_t digit = number % 10;
+		number = number / 10;
+		buffer[i] = (digit == 0 && i < length - 1) ? zeroChar : (digit + '0');
 	}
-}
-
-void itoa(int n, char s[], uint16_t base)
-{
-	int i, sign;
-
-	if ((sign = n) < 0) /* записываем знак */
-		n = -n;			/* делаем n положительным числом */
-	i = 0;
-	do
-	{							 /* генерируем цифры в обратном порядке */
-		s[i++] = n % base + '0'; /* берем следующую цифру */
-	} while ((n /= base) > 0);	 /* удаляем */
-	if (sign < 0)
-		s[i++] = '-';
-	s[i] = '\0';
-	reverse(s);
-}
-
-void setNumberToCharBuffer(uint16_t number, uint8_t offset, char *buffer)
-{
-	char buf[4];
-	itoa(number, buf, 10);
-	buffer[0 + offset] = number >= 10 ? buf[0] : '0';
-	buffer[1 + offset] = number < 10 ? buf[0] : buf[1];
+	for (uint8_t i = length; i < bufferLength - 1; i++)
+		buffer[i] = '\0';
 }
