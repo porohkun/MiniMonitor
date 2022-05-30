@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
+using System.Management;
 using System.Threading.Tasks;
 
 namespace DebugApp
@@ -50,8 +51,9 @@ namespace DebugApp
         }
 
         public DelegateCommand ListenPortCommand { get; }
-        public DelegateCommand StartMonitorCommand { get; }
+        public DelegateCommand SingleSyncCommand { get; }
         public DelegateCommand XBmpEditorOpenCommand { get; }
+        public DelegateCommand CheckDevicesCommand { get; }
 
         private object _valuesLock = new object();
         private object _portsLock = new object();
@@ -59,8 +61,9 @@ namespace DebugApp
         public MainWindowViewModel()
         {
             ListenPortCommand = new DelegateCommand(() => Task.Run(ListenPort));
-            StartMonitorCommand = new DelegateCommand(() => Task.Run(StartMonitor));
+            SingleSyncCommand = new DelegateCommand(() => Task.Run(SingleSync));
             XBmpEditorOpenCommand = new DelegateCommand(() => new XBmpWindow().Show());
+            CheckDevicesCommand = new DelegateCommand(() => Task.Run(CheckDevices));
 
             System.Windows.Data.BindingOperations.EnableCollectionSynchronization(Values, _valuesLock);
             System.Windows.Data.BindingOperations.EnableCollectionSynchronization(Ports, _portsLock);
@@ -134,12 +137,24 @@ namespace DebugApp
 
         }
 
-        private void StartMonitor()
+        private void SingleSync()
         {
             _monitor.Update();
             Values.Clear();
             foreach (var value in _monitor.GetValues())
                 Values.Add(new ValueData() { Name = value.Key, Value = value.Value });
+        }
+
+        private void CheckDevices()
+        {
+            var wmi = new List<ManagementBaseObject>();
+            using (var searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_PnPEntity WHERE ClassGuid=\"{4d36e978-e325-11ce-bfc1-08002be10318}\""))
+                foreach (var queryObj in searcher.Get())
+                {
+                    var name = (string)queryObj.GetPropertyValue("Name");
+                    if (name?.Contains("Arduino") ?? false)
+                        wmi.Add(queryObj);
+                }
         }
 
         private void Log(string message)
